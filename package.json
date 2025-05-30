@@ -1,0 +1,42 @@
+{
+  "name": "react-posts-app",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "antd": "^5.25.3",
+    "axios": "^1.6.0",
+    "formik": "^2.4.4",
+    "json-server": "^0.17.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-infinite-scroll-component": "^6.1.0",
+    "react-query": "^3.39.3",
+    "react-scripts": "5.0.1",
+    "typescript": "4.9.5",
+    "yup": "^1.2.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "server": "json-server --watch db.json --port 5000",
+    "dev": "concurrently \"npm run server\" \"npm run start\""
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.27",
+    "@types/react-dom": "^18.0.10",
+    "@types/react-infinite-scroll-component": "^4.2.5",
+    "concurrently": "^9.1.2"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

@@ -1,0 +1,19 @@
+th {
+  padding: 12;
+  text-align: "left";
+  border-bottom: "1px solid #f0f0f0";
+}
+table {
+  width: "100%";
+  border-collapse: "collapse";
+}
+
+p {
+  text-align: "center";
+  padding: 16;
+}
+
+div {
+  text-align: "center";
+  padding: 24;
+}

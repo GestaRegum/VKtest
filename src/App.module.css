@@ -1,0 +1,47 @@
+.appContainer {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.loading,
+.error {
+  padding: 10px;
+  text-align: center;
+}
+
+.error {
+  color: #d32f2f;
+}
+
+button {
+  margin: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: #f2f2f2;
+}
+
+tr:nth-child(even) {
+  background-color: rgb(245, 235, 235);
+}
+
+.comments {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #f9f9f9;
+}

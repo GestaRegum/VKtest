@@ -1,0 +1,43 @@
+{
+  "posts": [
+    {
+      "title": "Первый1",
+      "views": 101,
+      "author": "Gesta1",
+      "category": "тест",
+      "status": "комент",
+      "id": 2,
+      "comments": "1233"
+    },
+    {
+      "title": "1",
+      "views": 1,
+      "author": "1",
+      "category": "1",
+      "status": "12",
+      "id": 3,
+      "comments": "23123"
+    },
+    {
+      "title": "1",
+      "views": 2,
+      "author": "3",
+      "category": "4",
+      "status": "5",
+      "id": 4,
+      "comments": "123"
+    },
+    {
+      "title": "123",
+      "views": 123,
+      "author": "123",
+      "category": "123",
+      "status": "123",
+      "доп информация 1": "123",
+      "id": 5
+    }
+  ],
+  "profile": {
+    "name": "typicode"
+  }
+}
