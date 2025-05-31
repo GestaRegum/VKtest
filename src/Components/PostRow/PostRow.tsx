@@ -1,45 +1,17 @@
+// src/components/PostRow/PostRow.tsx
 import React, { useState } from "react";
-import { useMutation, useQueryClient } from "react-query";
-import axios from "axios";
-import { Button, Input, Space, Popconfirm, message } from "antd";
-import { API_URL } from "../../config";
-import { Post, PostRowProps } from "../types";
+import { Button, Input, Space, Popconfirm } from "antd";
+import { Post, PostRowProps } from "../../types";
+import { usePostMutations } from "../../hooks/usePostMutations";
 
 export const PostRow: React.FC<PostRowProps> = ({ post, extraFields }) => {
   const [editing, setEditing] = useState(false);
   const [formData, setFormData] = useState<Post>(post);
-  const queryClient = useQueryClient();
-
-  const updateMutation = useMutation(
-    (updatedPost: Post) =>
-      axios.put(`${API_URL}/posts/${post.id}`, updatedPost),
-    {
-      onSuccess: () => {
-        message.success("Пост успешно обновлен");
-        queryClient.invalidateQueries("posts");
-        setEditing(false);
-      },
-      onError: (error: any) => {
-        message.error(`Ошибка при обновлении: ${error.message}`);
-      },
-    }
-  );
-
-  const deleteMutation = useMutation(
-    () => axios.delete(`${API_URL}/posts/${post.id}?_dependent=comments`),
-    {
-      onSuccess: () => {
-        message.success("Пост успешно удален");
-        queryClient.invalidateQueries("posts");
-      },
-      onError: (error: any) => {
-        message.error(`Ошибка при удалении: ${error.message}`);
-      },
-    }
-  );
+  const { updateMutation, deleteMutation } = usePostMutations(post.id);
 
   const handleSave = () => {
     updateMutation.mutate(formData);
+    setEditing(false);
   };
 
   const handleCancel = () => {

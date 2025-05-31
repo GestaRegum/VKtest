@@ -1,22 +1,10 @@
-import React, { useMemo } from "react";
-import { useInfiniteQuery } from "react-query";
-import axios from "axios";
+import React from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { Button, Spin } from "antd";
 import { PostRow } from "../PostRow";
-import { API_URL } from "../../config";
-import { Post } from "../types";
-import styles from "./PostTable.module.css";
-
-const fetchPosts = async ({ pageParam = 1 }: { pageParam?: number }) => {
-  const res = await axios.get(`${API_URL}/posts`, {
-    params: {
-      _page: pageParam,
-      _limit: 10,
-    },
-  });
-  return res.data as Post[];
-};
+import { Post } from "../../types";
+import { usePosts } from "../../hooks/usePosts";
+import { getAllFields, getAdditionally } from "../../utils/postUtils";
 
 export const PostTable = () => {
   const {
@@ -27,51 +15,13 @@ export const PostTable = () => {
     isError,
     error,
     refetch,
-  } = useInfiniteQuery("posts", fetchPosts, {
-    getNextPageParam: (lastPage, pages) => {
-      return lastPage.length === 10 ? pages.length + 1 : undefined;
-    },
-  });
-
-  const getAllFields = (posts: Post[]) => {
-    const fields = new Set<string>();
-    posts.forEach((post) => {
-      Object.keys(post).forEach((key) => {
-        if (!["id"].includes(key)) {
-          fields.add(key);
-        }
-      });
-    });
-    return Array.from(fields);
-  };
-
-  const getAdditionally = (posts: Post[]) => {
-    const fields = new Set<string>();
-    posts.forEach((post) => {
-      Object.keys(post).forEach((key) => {
-        if (
-          ![
-            "id",
-            "title",
-            "views",
-            "author",
-            "category",
-            "status",
-            "comments",
-          ].includes(key)
-        ) {
-          fields.add(key);
-        }
-      });
-    });
-    return Array.from(fields);
-  };
+  } = usePosts();
 
   const posts = data?.pages.flat() || [];
   const extraFields = getAllFields(posts);
   const addFields = getAdditionally(posts);
 
-  if (isLoading) return <Spin tip="Загрузка постов..." size="large" />;
+  if (isLoading) return <Spin size="large" />;
   if (isError)
     return (
       <div>

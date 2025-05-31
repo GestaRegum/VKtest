@@ -1,55 +1,19 @@
 import React, { useState } from "react";
-import { useMutation, useQueryClient } from "react-query";
-import axios from "axios";
 import { Formik, Form } from "formik";
-import * as Yup from "yup";
-import { API_URL } from "../../config";
 import { Button, Input, Space, message, Card, Row, Col } from "antd";
 import { PlusOutlined, DeleteOutlined, SaveOutlined } from "@ant-design/icons";
-import { FormValues, PostInput } from "../types";
+import { useCreatePost } from "../../hooks/useCreatePost";
+import {
+  getInitialValues,
+  getValidationSchema,
+} from "../../utils/postFormUtils";
 import styles from "./PostForm.module.css";
 
 export const PostForm = () => {
-  const queryClient = useQueryClient();
   const [extraFields, setExtraFields] = useState<string[]>([]);
   const [fieldCounter, setFieldCounter] = useState(1);
+  const mutation = useCreatePost();
 
-  const mutation = useMutation<void, unknown, PostInput>(
-    (newPost) => axios.post(`${API_URL}/posts`, newPost),
-    {
-      onSuccess: () => {
-        message.success("Пост успешно создан!");
-        queryClient.invalidateQueries("posts");
-        setExtraFields([]);
-        setFieldCounter(1);
-      },
-      onError: (error: any) => {
-        message.error(
-          `Ошибка при создании поста: ${
-            error.response?.data?.message || error.message
-          }`
-        );
-      },
-    }
-  );
-
-  const getInitialValues = (): FormValues => {
-    const baseValues = {
-      title: "",
-      views: "",
-      author: "",
-      category: "",
-      status: "",
-    };
-
-    return extraFields.reduce(
-      (acc, key) => ({
-        ...acc,
-        [key]: "",
-      }),
-      baseValues
-    );
-  };
   const handleAddField = () => {
     const newField = `доп информация ${fieldCounter}`;
     setExtraFields([...extraFields, newField]);
@@ -63,44 +27,26 @@ export const PostForm = () => {
   return (
     <Card title="Создать новый пост" className={styles.card}>
       <Formik
-        initialValues={getInitialValues()}
+        initialValues={getInitialValues(extraFields)}
         enableReinitialize
-        validationSchema={Yup.object({
-          title: Yup.string().required("Обязательное поле"),
-          views: Yup.number()
-            .typeError("Должно быть числом")
-            .required("Обязательное поле")
-            .min(0, "Не может быть отрицательным"),
-          author: Yup.string().required("Укажите автора"),
-          category: Yup.string().required("Выберите категорию"),
-          status: Yup.string().required("Укажите статус"),
-          ...extraFields.reduce(
-            (acc, key) => ({
-              ...acc,
-              [key]: Yup.string().notRequired(),
-            }),
-            {}
-          ),
-        })}
-        onSubmit={(values: FormValues, { setSubmitting, resetForm }) => {
-          const postData: PostInput = {
+        validationSchema={getValidationSchema(extraFields)}
+        onSubmit={(values, { setSubmitting, resetForm }) => {
+          const postData = {
             title: values.title,
             views: Number(values.views),
             author: values.author,
             category: values.category,
             status: values.status,
+            ...extraFields.reduce((acc, field) => {
+              if (values[field]) acc[field] = values[field];
+              return acc;
+            }, {} as Record<string, string>),
           };
-
-          extraFields.forEach((field) => {
-            if (values[field]) {
-              postData[field] = values[field];
-            }
-          });
 
           mutation.mutate(postData, {
             onSettled: () => {
               setSubmitting(false);
-              resetForm({ values: getInitialValues() });
+              resetForm({ values: getInitialValues(extraFields) });
             },
           });
         }}
